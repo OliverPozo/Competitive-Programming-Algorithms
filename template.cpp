@@ -18,7 +18,6 @@ using namespace std;
 
 int main(){
     fast_cin();
-    
     return 0;
 }
 

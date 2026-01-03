@@ -1,52 +1,64 @@
-
-
 typedef complex<double> cd;
-double mul;
-vector<cd> fft(vector<cd> a)
-{
+
+void fft(vector<cd>& a, bool invert) {
     int n = a.size();
-    if(n==1) return a;
-    double theta = 2.0*acos(-1)/(double)n;
-    cd w = 1;
-    cd wn = cd(cos(theta), mul*sin(theta));
-    vector<cd> y(n), aEven(n/2), aOdd(n/2);
-    for(int i=0;i<n/2;i++)
-    {
-        aEven[i] = a[2*i];
-        aOdd[i] = a[2*i+1];
+    if (n == 1) return;
+
+    vector<cd> a0(n / 2), a1(n / 2);
+    for (int i = 0; 2 * i < n; i++) {
+        a0[i] = a[2*i];
+        a1[i] = a[2*i+1];
     }
-    aEven = fft(aEven);
-    aOdd = fft(aOdd);
-    for(int i=0;i<n/2;i++)
-    {
-        a[i] = aEven[i] + w*aOdd[i];
-        a[n/2+i] = aEven[i] - w*aOdd[i];
-        w*=wn;
+    fft(a0, invert);
+    fft(a1, invert);
+
+    double ang = 2 * acos(-1) / n * (invert ? -1 : 1);
+    cd w(1), wn(cos(ang), sin(ang));
+    for (int i = 0; 2 * i < n; i++) {
+        a[i] = a0[i] + w * a1[i];
+        a[i + n/2] = a0[i] - w * a1[i];
+        if (invert) {
+            a[i] /= 2;
+            a[i + n/2] /= 2;
+        }
+        w *= wn;
     }
-    return a;
-}
-vector<cd> ffmul(vector<cd> a, vector<cd> b) //tamaño de a debe ser >= al tamaño de b
-{
-    int n = 2*a.size();
-    while(__builtin_popcount(n)>1) n+= (n&-n);
-    while(a.size()<n) a.push_back(0);
-    while(b.size()<n) b.push_back(0);
-    mul = 1;
-    a = fft(a);
-    b = fft(b);
-    for(int i=0;i<n;i++)
-        a[i] = a[i]*b[i];
-    mul = -1;
-    a = fft(a);
-    for(int i=0;i<n;i++)
-        a[i]/=n;
-    return a;
 }
 
+vector<ll> multiply(vector<ll> const& a, vector<ll> const& b) {
+    vector<cd> fa(a.begin(), a.end()), fb(b.begin(), b.end());
+    int n = 1;
+    while (n < a.size() + b.size()) 
+        n <<= 1;
+    fa.resize(n);
+    fb.resize(n);
+
+    fft(fa, false);
+    fft(fb, false);
+    for (int i = 0; i < n; i++)
+        fa[i] *= fb[i];
+    fft(fa, true);
+
+    vector<ll> result(n);
+    for (int i = 0; i < n; i++)
+        result[i] = round(fa[i].real());
+    return result;
+}
+
+//empiezas con el grado mayor : [4,3,2] seria de 4x^2+3x+2, tienes que rellenar
+//con 0s los que no tengan
 
 int main(){
     fast_cin();
-    //freopen("input.in", "r", stdin);
-    //freopen("output.out", "w", stdout);
+    int t; cin>>t;
+    while(t--){
+        int n; cin>>n; 
+        vector<ll> a(n+1), b(n+1); 
+        forn(i,n+1) cin>>a[i]; 
+        forn(i,n+1) cin>>b[i]; 
+        vector<ll> ans = multiply(a, b); 
+        forn(i,2*n+1) cout<<ans[i]<<" "; 
+        cout<<endl; 
+    }
     return 0;
 }

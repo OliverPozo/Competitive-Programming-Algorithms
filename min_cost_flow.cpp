@@ -2,14 +2,13 @@
 //con el menor costo. Lo mismo que Dinic pero aparte de la capacidad le das
 //el costo
 struct CheapDinitz{
-    const int INF = 1e9 + 7;
 
     CheapDinitz() {}
     CheapDinitz(int n, int s, int t) {init(n, s, t);}
 
-    int nodes, S, T;
-    vi dist;
-    vi pot, curFlow, prevNode, prevEdge, Q, inQue;
+    int nodes, S, T;  // Número de nodos, nodo fuente y nodo sumidero
+    vector<int> dist;
+    vector<int> pot, curFlow, prevNode, prevEdge, Q, inQue;
 
     struct flowEdge{
         int to, rev, flow, cap, cost;
@@ -24,6 +23,7 @@ struct CheapDinitz{
         G.resize(n);
     }
 
+    // Agrega una arista dirigida de s a t con capacidad y costo dados
     void addEdge(int s, int t, int cap, int cost)
     {
         flowEdge a = {t, (int)G[t].size(), 0, cap, cost};
@@ -61,22 +61,22 @@ struct CheapDinitz{
         }
     }
 
-    ii MinCostFlow()
+    pair<int, int> MinCostFlow()
     {
         bellmanFord();
         int flow = 0;
         int flowCost = 0;
         while (true) // always a good start for an algorithm :v
         {
-            set<ii> s;
+            set<pair<int, int>> s;
             s.insert({0, S});
             dist.assign(nodes, INF);
             dist[S] = 0;
             curFlow[S] = INF;
             while (s.size() > 0)
             {
-                int u = s.begin() -> s;
-                int actDist = s.begin() -> f;
+                int u = s.begin() -> se;
+                int actDist = s.begin() -> fi;
                 s.erase(s.begin());
                 if (actDist > dist[u]) continue;
                 for (int i = 0; i < (int)G[u].size(); i++)
