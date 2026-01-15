@@ -2,6 +2,8 @@
 #include <ext/pb_ds/tree_policy.hpp>
 using namespace __gnu_pbds;
 
+
+//ELIMINA DEFINE INT LONG LONG SI LO TIENES, PUEDE CAUSAR PROBLEMAS !!!!!
 template<class T> using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 
@@ -10,7 +12,7 @@ template<class T> using ordered_multiset = tree<T, null_type, less_equal<T>, rb_
 
 // order_of_key te da la pos, find_by_order te da el elem dado una posicion
 // order_of_key(k): Gives the count of elements smaller than k. — O(log n)
-// find_by_order(k): Returns the iterator for the kth element (use k = 0 for the first element). — O(log n)
+// find_by_order(pos): Returns the iterator for the kth element (use pos = 0 for the first element). — O(log n)
 // sz(ord)
 // ord.clear()
 // ord.erase(val)

@@ -1,6 +1,7 @@
 #include <bits/stdc++.h>  
  
 #define ll                    long long
+#define int                   long long
 #define ld                    long double
 #define pb                    push_back
 #define fi                    first
@@ -16,7 +17,7 @@
 using namespace std;
  
 
-int main(){
+signed main(){
     fast_cin();
     return 0;
 }
