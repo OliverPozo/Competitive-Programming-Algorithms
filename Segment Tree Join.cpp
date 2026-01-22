@@ -16,9 +16,21 @@ Node op(Node a, Node b) {
 }
 // >>>>>>>> Implement 
  
-struct segtree { 
+struct SegmentTree { 
     vector<Node> nodes;
     ll n;
+
+    // Constructor 1: Solo tamaño - inicializa todo con valor neutral
+    SegmentTree(int size) {
+        n = size;
+        int treeSize = 1;
+        while (treeSize < n) {
+            treeSize *= 2;
+        }
+        nodes.resize(treeSize * 2);
+        buildNeutral(0, 0, n-1);
+    }
+    
  
     void init(vector<Node>& initial) {
         nodes.clear();
@@ -29,6 +41,18 @@ struct segtree {
         }
         nodes.resize(size * 2);
         build(0, 0, n-1, initial);
+    }
+
+    // Construir con valores neutrales
+    void buildNeutral(int i, int sl, int sr) {
+        if (sl == sr) {
+            nodes[i] = neutral();
+        } else {
+            ll mid = (sl + sr) >> 1;
+            buildNeutral(i*2+1, sl, mid);
+            buildNeutral(i*2+2, mid+1,sr);
+            nodes[i] = op(nodes[i*2+1], nodes[i*2+2]);
+        }
     }
  
     void build(int i, int sl, int sr, vector<Node>& initial) {
